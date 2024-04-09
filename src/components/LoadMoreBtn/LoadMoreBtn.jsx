@@ -5,6 +5,7 @@ import css from "./LoadMoreBtn.module.css";
     1. когда в масиве фот-фий есть єлементи і пейдж < тотал пейдж
 */
 const LoadMoreBtn = ({ onLoadMore, imageGallery, page }) => {
+
     return (
         <>
             {(Boolean(imageGallery.data.length) && page < imageGallery.total_pages) &&

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 
-const userKey = 'IoY6wkOsCIhtcv7XxE5c1pqtUYGp1MBDXMNQcDBZHMU';
+const userKey = import.meta.env.VITE_ACCESS_KEY;
 
-const useFetch = ({ userQuery, page }) => {
+const useFetch = ({ search, page }) => {
     const [imageGallery, setImageGallery] = useState({
         data: [],
         total: 0,
@@ -12,22 +12,37 @@ const useFetch = ({ userQuery, page }) => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
 
-    const refSearch = useRef(userQuery); //сохраняем предидущее состояние 
+    const refSearch = useRef(search); //сохраняем предидущее состояние 
 
     useEffect(() => {
-        if (!userQuery.length) return;
+        if (!search.length) return;
         async function getPicturesFromAPI() {
             try {
                 setLoading(true);
-                const { data } = await axios.get(`https://api.unsplash.com/search/photos?page=${page}&per_page=2&query=${userQuery}&client_id=${userKey}`);
+                const config = {
+                    params: {
+                        page: page,
+                        query: search,
+                        per_page: 20
+                    },
+                    headers: {
+                        Authorization: `Client-ID ${userKey}`
+                    }
+                }
+                const { data } = await axios.get(`https://api.unsplash.com/search/photos`, config);
+                if (!data.total) {
+                    setErrorMessage(true);
+                } else {
+                    setErrorMessage(false);
+                }
 
-                if (refSearch.current !== userQuery) {//если поменялся search
+                if (refSearch.current !== search) {//если поменялся search
                     setImageGallery({
                         data: data.results,
                         total: data.total,
                         total_pages: data.total_pages
                     });
-                    refSearch.current = userQuery;
+                    refSearch.current = search;
                 } else {//если поменялся пейдж
                     setImageGallery(prevState => ({
                         data: [...prevState.data, ...data.results],
@@ -35,6 +50,7 @@ const useFetch = ({ userQuery, page }) => {
                         total_pages: data.total_pages
                     }));
                 }
+
             } catch (error) {
                 setErrorMessage(true);
             } finally {
@@ -42,7 +58,7 @@ const useFetch = ({ userQuery, page }) => {
             }
         }
         getPicturesFromAPI();
-    }, [userQuery, page]);
+    }, [search, page]);
 
     return { imageGallery, loading, errorMessage }
 }

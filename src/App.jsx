@@ -1,5 +1,6 @@
 import ReactModal from "react-modal";
-import Modal from "react-modal";
+
+import { useState } from "react";
 
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import SearchBar from "./components/SearchBar/SearchBar";
@@ -8,37 +9,42 @@ import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import useGetImages from "./hooks/useGetImages";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
-import { useState } from "react";
 
-import css from "../src/components/ImageModal/ImageModal.module.css";
+import "./App.css";
 
 ReactModal.setAppElement('#root');
 
 const App = () => {
-  const { imageGallery, userQuery, loading, errorMessage, setUserQuery, onLoadMore, page } = useGetImages();
-  const [getId, setGetId] = useState({
-    id: 0,
-    full: ""
-  });
-  const [isOpen, setIsOpen] = useState(false);
+	const { imageGallery, loading, errorMessage, setSearch, onLoadMore, page } = useGetImages();
+	const [getImageParams, setGetImageParams] = useState({
+		id: 0,
+		full: ""
+	});
+	const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <>
-      <SearchBar setUserQuery={setUserQuery} userQuery={userQuery} />
-      <ErrorMessage errorMessage={errorMessage} />
-      <ImageGallery imageGallery={imageGallery.data} getId={getId} setGetId={setGetId} setIsOpen={setIsOpen} />
-      <Loader loading={loading} />
-      <LoadMoreBtn onLoadMore={onLoadMore} imageGallery={imageGallery} page={page} />
-
-      <Modal
-        isOpen={isOpen}
-        className={css.modal}
-        overlayClassName={css.overlay}
-        onRequestClose={() => setIsOpen(false)}>
-        <img src={getId.full} alt={getId.id} width="1000" height="750" className={css.modalImage} />
-      </Modal>
-    </>
-  )
+	return (
+		<>
+			<SearchBar setSearch={setSearch} />
+			<div className="content">
+				<ErrorMessage errorMessage={errorMessage} />
+				<ImageGallery
+					imageGallery={imageGallery.data}
+					setGetImageParams={setGetImageParams}
+					setIsOpen={setIsOpen} />
+				{loading
+					? <Loader loading={loading} />
+					: <LoadMoreBtn
+						onLoadMore={onLoadMore}
+						imageGallery={imageGallery}
+						page={page} />
+				}
+				<ImageModal
+					getImageParams={getImageParams}
+					isOpen={isOpen}
+					setIsOpen={setIsOpen} />
+			</div>
+		</>
+	)
 }
 
 export default App;

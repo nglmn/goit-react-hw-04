@@ -1,14 +1,14 @@
 import toast, { Toaster } from 'react-hot-toast';
+
 import css from "./SearchBar.module.css";
 
-const SearchBar = ({ setUserQuery, userQuery }) => {
-
+const SearchBar = ({ setSearch }) => {
     const onSubmit = (e) => {
         e.preventDefault();
         let query = e.target.elements.userQuery.value;
         query = query.trim();
-        if (query === "") return alert('err');
-        setUserQuery(query);
+        if (query === "") return toast.error('Write something for searching...');
+        setSearch(query);
     }
 
     return (
@@ -24,6 +24,7 @@ const SearchBar = ({ setUserQuery, userQuery }) => {
                 />
                 <button type="submit" className={css.submitBtn}>Search</button>
             </form >
+            <Toaster />
         </header >
     )
 }
