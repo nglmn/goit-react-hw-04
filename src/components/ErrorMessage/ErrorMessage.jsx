@@ -1,10 +1,8 @@
-
 const ErrorMessage = ({ errorMessage }) => {
     return (
-        <>
-            {errorMessage && <p style={{ color: 'red', fontSize: "20px", margin: "0 auto" }}>Search query is empty</p>}
-        </>
-
+        <div>
+            {errorMessage && <h2 style={{ color: "red", fontWeight: 100 }}>No images for your request..</h2>}
+        </div>
     )
 }
 

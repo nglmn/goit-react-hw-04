@@ -4,6 +4,6 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 25px;
-    padding: 50px;
+    margin-bottom: 50px;
     justify-content: left;
 }

@@ -1,66 +1,71 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const userKey = import.meta.env.VITE_ACCESS_KEY;
 
-const useFetch = ({ search, page }) => {
-    const [imageGallery, setImageGallery] = useState({
-        data: [],
-        total: 0,
-        total_pages: 0
+const useFetch = () => {
+    const [images, setImages] = useState({
+        results: [],
+        total_pages: 0,
+        total: 0
     });
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showMoreBtn, setShowMoreBtn] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const [errorMessage, setErrorMessage] = useState(false);
 
-    const refSearch = useRef(search); //сохраняем предидущее состояние 
-
     useEffect(() => {
-        if (!search.length) return;
-        async function getPicturesFromAPI() {
+        if (!search) return;
+        async function getData() {
             try {
+                setErrorMessage(false);
+                setShowMoreBtn(false);
                 setLoading(true);
-                const config = {
+                const params = {
                     params: {
-                        page: page,
                         query: search,
-                        per_page: 20
+                        page: currentPage,
+                        per_page: 5
                     },
                     headers: {
                         Authorization: `Client-ID ${userKey}`
                     }
+                };
+                const response = await axios.get(`https://api.unsplash.com/search/photos`, params);
+                if (response.data.total === 0) {
+                    return setErrorMessage(true);
                 }
-                const { data } = await axios.get(`https://api.unsplash.com/search/photos`, config);
-                if (!data.total) {
-                    setErrorMessage(true);
-                } else {
-                    setErrorMessage(false);
+                if (response.data.total_pages > currentPage) {
+                    setImages((prevState) => {
+                        return {
+                            results: [...prevState.results, ...response.data.results],
+                            total_pages: response.data.total_pages,
+                            total: response.data.total
+                        };
+                    })
+                    setShowMoreBtn(true);
                 }
-
-                if (refSearch.current !== search) {//если поменялся search
-                    setImageGallery({
-                        data: data.results,
-                        total: data.total,
-                        total_pages: data.total_pages
-                    });
-                    refSearch.current = search;
-                } else {//если поменялся пейдж
-                    setImageGallery(prevState => ({
-                        data: [...prevState.data, ...data.results],
-                        total: data.total,
-                        total_pages: data.total_pages
-                    }));
-                }
-
             } catch (error) {
                 setErrorMessage(true);
+
             } finally {
                 setLoading(false);
             }
         }
-        getPicturesFromAPI();
-    }, [search, page]);
+        getData();
+    }, [search, currentPage])
 
-    return { imageGallery, loading, errorMessage }
+    useEffect(() => {
+        setCurrentPage(1);
+        setImages({
+            results: [],
+            total_pages: 0,
+            total: 0
+        });
+    }, [search]);
+
+    return { images, setSearch, loading, showMoreBtn, errorMessage, setCurrentPage, currentPage }
 }
 
 export default useFetch

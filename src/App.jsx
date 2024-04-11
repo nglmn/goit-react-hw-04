@@ -1,47 +1,44 @@
-import ReactModal from "react-modal";
-
 import { useState } from "react";
+import Modal from 'react-modal';
 
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import SearchBar from "./components/SearchBar/SearchBar";
 import Loader from "./components/Loader/Loader";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-import useGetImages from "./hooks/useGetImages";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import ImageModal from "./components/ImageModal/ImageModal";
+import useFetch from "./hooks/useFetch";
 
 import "./App.css";
 
-ReactModal.setAppElement('#root');
+Modal.setAppElement('#root');
 
 const App = () => {
-	const { imageGallery, loading, errorMessage, setSearch, onLoadMore, page } = useGetImages();
-	const [getImageParams, setGetImageParams] = useState({
-		id: 0,
-		full: ""
-	});
-	const [isOpen, setIsOpen] = useState(false);
+	const [modalSizeImg, setModalSizeImg] = useState(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const { images, setSearch, loading, showMoreBtn, errorMessage, setCurrentPage, currentPage } = useFetch();
 
 	return (
 		<>
 			<SearchBar setSearch={setSearch} />
 			<div className="content">
-				<ErrorMessage errorMessage={errorMessage} />
 				<ImageGallery
-					imageGallery={imageGallery.data}
-					setGetImageParams={setGetImageParams}
-					setIsOpen={setIsOpen} />
+					images={images.results}
+					setModalSizeImg={setModalSizeImg}
+					setIsModalOpen={setIsModalOpen} />
 				{loading
 					? <Loader loading={loading} />
 					: <LoadMoreBtn
-						onLoadMore={onLoadMore}
-						imageGallery={imageGallery}
-						page={page} />
-				}
-				<ImageModal
-					getImageParams={getImageParams}
-					isOpen={isOpen}
-					setIsOpen={setIsOpen} />
+						showMoreBtn={showMoreBtn}
+						setCurrentPage={setCurrentPage}
+						currentPage={currentPage} />}
+				<ErrorMessage errorMessage={errorMessage} />
+				{modalSizeImg
+					&& <ImageModal
+						modalSizeImg={modalSizeImg}
+						isModalOpen={isModalOpen}
+						setIsModalOpen={setIsModalOpen} />}
 			</div>
 		</>
 	)

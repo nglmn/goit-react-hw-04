@@ -9,12 +9,11 @@
 }
 .modal{ 
     overflow: hidden;
-   position: absolute;
-   top: 0;
-   left: 0;
-   transform: translate(50%, 25%);
-   width: 1000px;
-   height: 750px;
+    margin: 100px auto;
+   width: 700px;
+   height: 500px;
+   border: none;
+   outline: none;
 }
 .modalImage{
     object-fit: cover;

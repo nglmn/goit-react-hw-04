@@ -1,17 +1,13 @@
-import ImageCard from "../ImageCard/ImageCard"
+import ImageCard from "../ImageCard/ImageCard";
 import css from "./ImageGallery.module.css";
 
-const ImageGallery = ({ imageGallery, setGetImageParams, setIsOpen }) => {
+const ImageGallery = ({ images, setModalSizeImg, setIsModalOpen }) => {
     return (
-        <>
-            {Boolean(imageGallery.length) &&
-                <ul className={css.gallery}>
-                    {imageGallery.map(({ id, ...card }) => (
-                        <ImageCard key={id} card={card} id={id} setGetImageParams={setGetImageParams} setIsOpen={setIsOpen} />
-                    ))}
-                </ul >
-            }
-        </>
+        <ul className={css.gallery}>
+            {images.map(({ id, ...imageProps }) => (
+                <ImageCard key={id} imageProps={imageProps} id={id} setModalSizeImg={setModalSizeImg} setIsModalOpen={setIsModalOpen} />
+            ))}
+        </ul>
     )
 }
 

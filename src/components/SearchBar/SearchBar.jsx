@@ -1,31 +1,31 @@
 import toast, { Toaster } from 'react-hot-toast';
-
 import css from "./SearchBar.module.css";
 
 const SearchBar = ({ setSearch }) => {
-    const onSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        let query = e.target.elements.userQuery.value;
-        query = query.trim();
-        if (query === "") return toast.error('Write something for searching...');
-        setSearch(query);
+        const search = e.target.elements.inputSearch.value;
+        if (!search) {
+            return toast.error("The field is empty");
+        } else {
+            setSearch(search);
+        }
+        e.target.reset();
     }
-
     return (
         <header className={css.header}>
-            <form onSubmit={onSubmit} className={css.form}>
+            <form className={css.form} onSubmit={handleSubmit}>
                 <input
+                    className={css.input}
+                    name="inputSearch"
                     type="text"
-                    name="userQuery"
                     autoComplete="off"
                     autoFocus
-                    placeholder="Search images and photos"
-                    className={css.input}
-                />
+                    placeholder="Search images and photos" />
                 <button type="submit" className={css.submitBtn}>Search</button>
-            </form >
+            </form>
             <Toaster />
-        </header >
+        </header>
     )
 }
 
