@@ -1,14 +1,14 @@
 import toast, { Toaster } from 'react-hot-toast';
 import css from "./SearchBar.module.css";
 
-const SearchBar = ({ setSearch }) => {
+const SearchBar = ({ setInputSearch }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const search = e.target.elements.inputSearch.value;
         if (!search) {
             return toast.error("The field is empty");
         } else {
-            setSearch(search);
+            setInputSearch(search);
         }
         e.target.reset();
     }

@@ -5,16 +5,13 @@ import css from "./LoadMoreBtn.module.css";
     1. когда в масиве фот-фий есть єлементи і пейдж < тотал пейдж
 */
 
-const LoadMoreBtn = ({ showMoreBtn, setCurrentPage, currentPage }) => {
+const LoadMoreBtn = ({ loadMoreImages }) => {
     return (
-        <>
-            {showMoreBtn &&
-                <button
-                    className={css.loadBtn}
-                    type="button"
-                    onClick={() => setCurrentPage(currentPage + 1)}>Load more
-                </button >}
-        </>
+        <button
+            className={css.loadBtn}
+            type="button"
+            onClick={loadMoreImages}>Load more
+        </button >
     )
 }
 
