@@ -1,10 +1,9 @@
 import css from "./ImageCard.module.css";
 
-const ImageCard = ({ imageProps, setModalSizeImg, setIsModalOpen }) => {
+const ImageCard = ({ imageProps, openModal }) => {
     const { alt_description, urls: { regular, small } } = imageProps;
     const handleClick = () => {
-        setIsModalOpen(true);
-        setModalSizeImg(regular)
+        openModal(regular)
     }
 
     return (

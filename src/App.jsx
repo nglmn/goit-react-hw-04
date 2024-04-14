@@ -71,6 +71,14 @@ const App = () => {
 	function loadMoreImages() {
 		setCurrentPage(currentPage + 1);
 	}
+	const openModal = imageUrl => {
+		setIsModalOpen(true);
+		setModalSizeImg(imageUrl)
+	}
+	function closeModal() {
+		setIsModalOpen(false);
+		setModalSizeImg(null);
+	}
 
 	return (
 		<>
@@ -78,17 +86,17 @@ const App = () => {
 			<div className="content">
 				<ImageGallery
 					images={images.results}
-					setModalSizeImg={setModalSizeImg}
-					setIsModalOpen={setIsModalOpen} />
+					openModal={openModal} />
 				{loading
 					? <Loader loading={loading} />
 					: (showMoreBtn && <LoadMoreBtn loadMoreImages={loadMoreImages} />)}
 				<ErrorMessage errorMessage={errorMessage} />
 				{modalSizeImg
 					&& <ImageModal
+						openModal={openModal}
+						isOpen={isModalOpen}
 						modalSizeImg={modalSizeImg}
-						isModalOpen={isModalOpen}
-						setIsModalOpen={setIsModalOpen} />}
+						closeModal={closeModal} />}
 			</div>
 		</>
 	)
